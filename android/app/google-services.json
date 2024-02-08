@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "19979705705",
+    "project_id": "energiapp-c3659",
+    "storage_bucket": "energiapp-c3659.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19979705705:android:ab6dbb725a80ed07e7f1f8",
+        "android_client_info": {
+          "package_name": "br.com.energiapp.energiapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu9zsAxxDh4VR4hmNc2AXv54Eu_HZlQKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
