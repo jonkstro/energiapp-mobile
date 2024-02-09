@@ -15,7 +15,12 @@ class AuthFirebaseService implements AuthService {
     final authChanges = FirebaseAuth.instance.authStateChanges();
     // Aguarda as alterações e atualiza o usuário atual
     await for (final user in authChanges) {
-      _currentUser = user == null ? null : _toUserModel(user);
+      _currentUser = user == null
+          ? null
+          : _toUserModel(
+              user,
+              isActive: user.emailVerified,
+            );
       // Adiciona o usuário atual ao stream de alterações
       control.add(_currentUser);
 
@@ -29,6 +34,7 @@ class AuthFirebaseService implements AuthService {
   @override
   Stream<UserModel?> get userChanges => _userStream;
 
+  /// ----------------------- FIREBASE AUTH - INICIO ------------------------
   @override
   Future<void> login(String email, String password) async {
     final auth = FirebaseAuth.instance;
@@ -42,14 +48,13 @@ class AuthFirebaseService implements AuthService {
     if (userCredential.user?.emailVerified ?? false) {
       // TODO: Adicionar lógica para salvar a preferência de login automático
       // no SharedPreferences aqui, se necessário.
-
       // O login foi bem-sucedido
       print('Login successful!');
     } else {
       // Se o e-mail não foi verificado, você pode optar por lidar com isso
       // de acordo com os requisitos do seu aplicativo.
       print('E-mail not verified. Please verify your e-mail address.');
-      await logout();
+      // await logout();
     }
   }
 
@@ -67,17 +72,32 @@ class AuthFirebaseService implements AuthService {
     );
 
     if (credential.user != null) {
-      //1 - atualizar os dados do user
+      //atualizar os dados do user
       await credential.user!.updateDisplayName(name);
-      // 2 - fazer o login - nossa lógica não vai logar após registrar
-      // await login(email, password);
-      // 3 - salvar os dados do user no Firestore
-      _currentUser = _toUserModel(credential.user!, isCreated: true);
+
+      // salvar os dados do user no Firestore
+      _currentUser = _toUserModel(
+        credential.user!,
+        isCreated: true,
+        isActive: credential.user!.emailVerified,
+      );
       await _saveUserDataOnDatabase(_currentUser!);
-      // Deslogar, caso ele faça o login sozinho
-      // await logout();
+      await verifyEmail(email);
+      // await login(email, password);
     }
   }
+
+  // Enviar email após se cadastrar
+  Future<void> verifyEmail(String email) async {
+    final auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
+
+    if (user == null) return;
+
+    await user.sendEmailVerification();
+  }
+
+  /// ----------------------- FIREBASE AUTH - FIM ---------------------------
 
   // Salvar as informações de user pertinentes ao app no Firestore ou RealtimeDB
   Future<void> _saveUserDataOnDatabase(UserModel user) async {
@@ -94,6 +114,7 @@ class AuthFirebaseService implements AuthService {
       // estou garantindo que vou ter um createdAt!
       'createdAt': user.createdAt!.toIso8601String(),
       'updatedAt': user.updatedAt?.toIso8601String(),
+      'isActive': user.isActive,
     });
   }
 
@@ -102,18 +123,16 @@ class AuthFirebaseService implements AuthService {
     User user, {
     bool? isCreated,
     bool? isUpdated,
-    String? name,
+    bool? isActive,
   }) {
     return UserModel(
       // TODO: Verificar se o nome não tá vindo no user, se tiver apago o name
       id: user.uid,
-      name: name ??
-          user.displayName ??
-          user.email!.split('@')[0] ??
-          "DefaultName",
+      name: user.displayName ?? user.email!.split('@')[0],
       email: user.email!,
       createdAt: isCreated ?? false ? DateTime.now() : null,
       updatedAt: isUpdated ?? false ? DateTime.now() : null,
+      isActive: isActive ?? false,
     );
   }
 }

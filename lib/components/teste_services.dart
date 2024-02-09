@@ -9,7 +9,9 @@ class TesteServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserModel user =
-        UserModel(id: '2', name: 'teste2', email: 'email2@teste.com');
+        // UserModel(id: '10', name: 'teste10', email: 'email10@teste.com');
+        UserModel(
+            id: '11', name: 'teste11', email: 'jonascastro.dev@gmail.com');
     const String pass = '123456789';
 
     Future<void> logar() async {
@@ -35,6 +37,17 @@ class TesteServices extends StatelessWidget {
       }
     }
 
+    Future<void> sair() async {
+      try {
+        // ...
+        await AuthService().logout();
+        print(AuthService().currentUser);
+      } catch (error) {
+        print('error: $error');
+        ErrorSnackbar.show(context, error);
+      }
+    }
+
     print('Ola services');
     return Column(
       children: [
@@ -46,6 +59,10 @@ class TesteServices extends StatelessWidget {
         ElevatedButton(
           child: const Text('Registrar'),
           onPressed: () => registrar(),
+        ),
+        ElevatedButton(
+          child: const Text('Sair'),
+          onPressed: () => sair(),
         ),
       ],
     );

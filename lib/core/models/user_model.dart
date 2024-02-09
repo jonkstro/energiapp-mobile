@@ -6,11 +6,13 @@ class UserModel {
   String email;
   DateTime? createdAt;
   DateTime? updatedAt;
+  bool? isActive;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
+    this.isActive,
     this.createdAt,
     this.updatedAt,
   });
