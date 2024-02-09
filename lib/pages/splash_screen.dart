@@ -19,20 +19,28 @@ class SplashScreen extends StatelessWidget {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset(
-              'assets/images/logo.png',
-              width: 150,
-              height: 150,
+            Column(
+              children: [
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 150,
+                  height: 150,
+                ),
+                Text(
+                  'EnergiApp',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+              ],
             ),
             const SizedBox(height: 30),
-            CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-            Text(
-              'Carregando...',
-              style: Theme.of(context).textTheme.bodySmall,
+            SizedBox(
+              height: 75,
+              width: 75,
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ],
         ),

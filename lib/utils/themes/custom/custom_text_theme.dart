@@ -29,7 +29,33 @@ class CustomTextTheme {
       FontWeight.bold,
     ),
   );
-  static final darkTheme = TextTheme();
+  static final darkTheme = TextTheme(
+    labelSmall: _customStyle(
+      16,
+      ColorsConstants.bodyTextDark,
+      FontWeight.normal,
+    ),
+    labelMedium: _customStyle(
+      16,
+      ColorsConstants.bodyTextDark,
+      FontWeight.bold,
+    ),
+    bodySmall: _customStyle(
+      18,
+      ColorsConstants.bodyTextDark,
+      FontWeight.normal,
+    ),
+    bodyMedium: _customStyle(
+      18,
+      ColorsConstants.bodyTextDark,
+      FontWeight.bold,
+    ),
+    headlineLarge: _customStyle(
+      30,
+      ColorsConstants.bodyTextDark,
+      FontWeight.bold,
+    ),
+  );
 
   static TextStyle _customStyle(
       double fontSize, Color color, FontWeight fontWeight) {
