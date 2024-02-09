@@ -16,10 +16,7 @@ class TesteServices extends StatelessWidget {
 
     Future<void> logar() async {
       try {
-        await AuthService().login(
-          user.email,
-          pass,
-        );
+        await AuthService().login(user.email, pass, false);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);

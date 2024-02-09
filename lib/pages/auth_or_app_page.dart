@@ -35,7 +35,10 @@ class _AuthOrAppPageState extends State<AuthOrAppPage> {
               if (snapshot.hasData) {
                 // se o dado da stream tiver ativo = verificou email
                 if (snapshot.data!.isActive!) {
-                  return const HomePage();
+                  // se a data de validade do login for após hoje, faz logout
+                  return snapshot.data!.expiresAt!.isAfter(DateTime.now())
+                      ? const HomePage()
+                      : const AuthPage();
                 }
                 return const EmailValidationPage();
               }

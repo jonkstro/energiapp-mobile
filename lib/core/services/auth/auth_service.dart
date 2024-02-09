@@ -19,6 +19,7 @@ abstract class AuthService {
   Future<void> login(
     String email,
     String password,
+    bool continueLogged,
     // add outros campos do formulário, se precisar (ex.: continuar logado?)
   );
 

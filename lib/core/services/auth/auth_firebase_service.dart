@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:energiapp/core/models/user_model.dart';
 import 'package:energiapp/core/services/auth/auth_service.dart';
+import 'package:energiapp/data/storage_data.dart';
 import 'package:energiapp/utils/constants/firebase_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,16 +16,22 @@ class AuthFirebaseService implements AuthService {
     final authChanges = FirebaseAuth.instance.authStateChanges();
     // Aguarda as alterações e atualiza o usuário atual
     await for (final user in authChanges) {
-      _currentUser = user == null
-          ? null
-          : _toUserModel(
-              user,
-              isActive: user.emailVerified,
-            );
+      if (user == null) {
+        /// TODO: Verificar se consegue logar pelo sharedPreferences
+        final userStoredData = await StorageData.getMap('userData');
+        _currentUser = userStoredData.isEmpty
+            ? null
+            : UserModel(
+                id: userStoredData['id'],
+                name: userStoredData['name'],
+                email: userStoredData['email'],
+                expiresAt: userStoredData['expiresAt'],
+              );
+      } else {
+        _currentUser = _toUserModel(user, isActive: user.emailVerified);
+      }
       // Adiciona o usuário atual ao stream de alterações
       control.add(_currentUser);
-
-      /// TODO: Verificar se consegue logar pelo sharedPreferences
     }
   });
 
@@ -36,25 +43,39 @@ class AuthFirebaseService implements AuthService {
 
   /// ----------------------- FIREBASE AUTH - INICIO ------------------------
   @override
-  Future<void> login(String email, String password) async {
+  Future<void> login(String email, String password, bool continueLogged) async {
     final auth = FirebaseAuth.instance;
     // Efetua o login com e-mail e senha
     final userCredential = await auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-
+    final user = userCredential.user;
+    if (user == null) return;
     // Verifica se o e-mail do usuário foi verificado
-    if (userCredential.user?.emailVerified ?? false) {
-      // TODO: Adicionar lógica para salvar a preferência de login automático
-      // no SharedPreferences aqui, se necessário.
-      // O login foi bem-sucedido
+    if (user.emailVerified) {
+      // Faltando:
+      // 1 - ADICIONAR O CHECKBOX NO AuthService()
+
+      // O login foi bem-sucedido e está marcado "continuar logado"
+      if (continueLogged) {
+        await StorageData.saveMap('userData', {
+          'id': user.uid,
+          'name': user.displayName,
+          'email': user.email,
+          'expiresAt': DateTime.now().add(const Duration(days: 30)),
+        });
+        // O login foi bem-sucedido e está desmarcado "continuar logado"
+      } else {
+        final userData = await StorageData.getMap('userData');
+        if (userData.isNotEmpty) await StorageData.remove('userData');
+      }
       print('Login successful!');
     } else {
       // Se o e-mail não foi verificado, você pode optar por lidar com isso
       // de acordo com os requisitos do seu aplicativo.
       print('E-mail not verified. Please verify your e-mail address.');
-      // await logout();
+      throw ('E-mail não verificado.');
     }
   }
 
@@ -114,7 +135,6 @@ class AuthFirebaseService implements AuthService {
       // estou garantindo que vou ter um createdAt!
       'createdAt': user.createdAt!.toIso8601String(),
       'updatedAt': user.updatedAt?.toIso8601String(),
-      'isActive': user.isActive,
     });
   }
 
@@ -123,6 +143,7 @@ class AuthFirebaseService implements AuthService {
     User user, {
     bool? isCreated,
     bool? isUpdated,
+    DateTime? expiresAt,
     bool? isActive,
   }) {
     return UserModel(
@@ -132,6 +153,7 @@ class AuthFirebaseService implements AuthService {
       email: user.email!,
       createdAt: isCreated ?? false ? DateTime.now() : null,
       updatedAt: isUpdated ?? false ? DateTime.now() : null,
+      expiresAt: expiresAt ?? DateTime.now().add(const Duration(hours: 1)),
       isActive: isActive ?? false,
     );
   }
