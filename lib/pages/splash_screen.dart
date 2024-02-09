@@ -1,3 +1,4 @@
+import 'package:energiapp/components/teste_services.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -42,6 +43,9 @@ class SplashScreen extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
+
+            /// APAGAR DEPOIS
+            TesteServices(),
           ],
         ),
       ),
