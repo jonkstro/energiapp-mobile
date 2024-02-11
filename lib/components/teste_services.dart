@@ -1,6 +1,6 @@
 import 'package:energiapp/components/error_snackbar.dart';
 import 'package:energiapp/core/models/user_model.dart';
-import 'package:energiapp/core/services/auth/auth_service.dart';
+import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:flutter/material.dart';
 
 class TesteServices extends StatelessWidget {
@@ -9,14 +9,15 @@ class TesteServices extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserModel user =
-        // UserModel(id: '10', name: 'teste10', email: 'email10@teste.com');
-        UserModel(
-            id: '11', name: 'teste11', email: 'jonascastro.dev@gmail.com');
+        // UserModel(id: '01', name: 'teste01', email: 'email01@teste.com');
+        UserModel(id: 'j1', name: 'jonas', email: 'jonascastro.dev@gmail.com');
     const String pass = '123456789';
 
     Future<void> logar() async {
       try {
-        await AuthService().login(user.email, pass, false);
+        await AuthStateService().login(user.email, pass, true);
+        // await AuthService().login(user.email, pass, false);
+        // // await AuthService().login(user.email, pass, true);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);
@@ -26,8 +27,9 @@ class TesteServices extends StatelessWidget {
     Future<void> registrar() async {
       try {
         // ...
-        await AuthService().signUp(user.email, pass, user.name);
-        print(AuthService().currentUser);
+        await AuthStateService().signUp(user.email, pass, user.name);
+        print('AuthStateService().currentUser');
+        print(AuthStateService().currentUser);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);
@@ -37,8 +39,9 @@ class TesteServices extends StatelessWidget {
     Future<void> sair() async {
       try {
         // ...
-        await AuthService().logout();
-        print(AuthService().currentUser);
+        await AuthStateService().logout();
+        print('AuthStateService().currentUser');
+        print(AuthStateService().currentUser);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);

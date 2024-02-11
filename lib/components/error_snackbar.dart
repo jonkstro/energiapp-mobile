@@ -30,10 +30,8 @@ class ErrorSnackbar {
 
   static String _mapFirebaseAuthErrorCode(FirebaseAuthException error) {
     switch (error.code) {
-      case 'user-not-found':
-        return 'Usuário não encontrado.';
-      case 'wrong-password':
-        return 'Senha incorreta.';
+      case 'invalid-credential':
+        return 'Credenciais incorretas.';
       case 'email-already-in-use':
         return 'O endereço de email já está sendo usado.';
       default:
