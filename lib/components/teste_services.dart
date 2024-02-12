@@ -29,7 +29,7 @@ class TesteServices extends StatelessWidget {
         // ...
         await AuthStateService().signUp(user.email, pass, user.name);
         print('AuthStateService().currentUser');
-        print(AuthStateService().currentUser);
+        print(AuthStateService().loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);
@@ -41,7 +41,7 @@ class TesteServices extends StatelessWidget {
         // ...
         await AuthStateService().logout();
         print('AuthStateService().currentUser');
-        print(AuthStateService().currentUser);
+        print(AuthStateService().loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);

@@ -2,9 +2,11 @@ import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
 import 'package:energiapp/pages/widget_tree_page.dart';
 import 'package:energiapp/utils/themes/my_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 

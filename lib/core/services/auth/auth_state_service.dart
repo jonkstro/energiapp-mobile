@@ -3,9 +3,7 @@ import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
 
 abstract class AuthStateService {
   // getter para obter informações sobre o usuário atual
-  UserModel? get currentUser;
   Future<UserModel?> get loggedUserData;
-  bool get isAuth;
 
   Future<void> signUp(
     String email,
