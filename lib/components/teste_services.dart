@@ -8,6 +8,8 @@ class TesteServices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = AuthStateService();
+
     final UserModel user =
         // UserModel(id: '01', name: 'teste01', email: 'email01@teste.com');
         UserModel(id: 'j1', name: 'jonas', email: 'jonascastro.dev@gmail.com');
@@ -15,7 +17,7 @@ class TesteServices extends StatelessWidget {
 
     Future<void> logar() async {
       try {
-        await AuthStateService().login(user.email, pass, true);
+        await auth.login(user.email, pass, true);
         // await AuthService().login(user.email, pass, false);
         // // await AuthService().login(user.email, pass, true);
       } catch (error) {
@@ -27,9 +29,9 @@ class TesteServices extends StatelessWidget {
     Future<void> registrar() async {
       try {
         // ...
-        await AuthStateService().signUp(user.email, pass, user.name);
-        print('AuthStateService().currentUser');
-        print(AuthStateService().loggedUserData);
+        await auth.signUp(user.email, pass, user.name);
+        print('authenticated currentUser');
+        print(auth.loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);
@@ -39,9 +41,9 @@ class TesteServices extends StatelessWidget {
     Future<void> sair() async {
       try {
         // ...
-        await AuthStateService().logout();
-        print('AuthStateService().currentUser');
-        print(AuthStateService().loggedUserData);
+        await auth.logout();
+        print('authenticated currentUser');
+        print(auth.loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);

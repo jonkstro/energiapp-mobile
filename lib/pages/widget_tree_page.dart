@@ -1,3 +1,4 @@
+import 'package:energiapp/core/models/user_model.dart';
 import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:energiapp/pages/auth_page.dart';
 import 'package:energiapp/pages/email_validation_page.dart';
@@ -37,10 +38,13 @@ class _WidgetTreeStatePage extends State<WidgetTreePage> {
             future: AuthStateService().loggedUserData,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
+                // Se não vier nada, tem que fazer login
                 return const AuthPage();
               }
-              if (!snapshot.data!.isActive!) return const EmailValidationPage();
-              if (snapshot.data!.expiresAt!.isBefore(DateTime.now())) {
+              final UserModel user = snapshot.data!;
+              // Se o user não tiver ativo, vai para página de email validation
+              if (!user.isActive!) return EmailValidationPage(user: user);
+              if (user!.expiresAt!.isBefore(DateTime.now())) {
                 return const AuthPage();
               }
               return const HomePage();
