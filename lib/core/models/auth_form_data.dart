@@ -9,6 +9,9 @@ class AuthFormData {
   String name = '';
   String email = '';
   String password = '';
+  bool continueLogged = false;
+  bool hidePassword = true;
+  bool hideConfirmPassword = true;
   // add outros campos do formulário, se necessário
 
   // iniciar sempre na tela de login

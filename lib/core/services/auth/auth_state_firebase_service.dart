@@ -11,6 +11,9 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
   UserModel? _currentUser;
 
   @override
+  UserModel? get currentUser => _currentUser;
+
+  @override
   Future<UserModel?> get loggedUserData async {
     final userStoredData = await StorageData.getMap('userData');
     if (userStoredData.isNotEmpty) {
@@ -69,7 +72,13 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
     final user = userCredential.user;
     if (user == null) return;
     await user.updateDisplayName(name);
-    _currentUser = await _toUserModel(user, isActive: false, isCreated: true);
+    await user.reload(); // ver se vai atualizar o nome
+    _currentUser = await _toUserModel(
+      user,
+      isActive: false,
+      isCreated: true,
+      name: name,
+    );
     await _saveUserDataOnDatabase(_currentUser!);
     await verifyEmail(email);
 
@@ -116,13 +125,16 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
     final docRef = store.collection(userPath).doc(user.uid);
     final doc = await docRef.get();
     final data = doc.data();
+    if (data == null) return null;
     return UserModel(
       id: doc.id,
-      name: data?['name'],
-      email: data?['email'],
-      createdAt: DateTime.parse(data?['createdAt']),
-      updatedAt: DateTime.parse(data?['updatedAt']),
-      permissao: data?['permissao'],
+      name: data['name'],
+      email: data['email'],
+      createdAt:
+          data['createdAt'] != null ? DateTime.parse(data['createdAt']) : null,
+      updatedAt:
+          data['updatedAt'] != null ? DateTime.parse(data['updatedAt']) : null,
+      permissao: data['permissao'],
     );
   }
   // ----------- FIRESTORE FIM ------------
@@ -130,6 +142,7 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
   // Converte um objeto User do Firebase em um UserModel personalizado
   _toUserModel(
     User user, {
+    String? name,
     bool? isCreated,
     bool? isUpdated,
     DateTime? expiresAt,
@@ -139,7 +152,7 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
     final userFromDb = await _getUserAdditionalDataFromDB(user);
     return UserModel(
       id: user.uid,
-      name: user.displayName ?? user.email!.split('@')[0],
+      name: name ?? user.displayName ?? user.email!.split('@')[0],
       email: user.email!,
       createdAt:
           // se iscreated for vazio vai ser false

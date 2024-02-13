@@ -43,8 +43,8 @@ class _WidgetTreeStatePage extends State<WidgetTreePage> {
               }
               final UserModel user = snapshot.data!;
               // Se o user não tiver ativo, vai para página de email validation
-              if (!user.isActive!) return EmailValidationPage(user: user);
-              if (user!.expiresAt!.isBefore(DateTime.now())) {
+              // if (!user.isActive!) return EmailValidationPage();
+              if (user.expiresAt!.isBefore(DateTime.now())) {
                 return const AuthPage();
               }
               return const HomePage();

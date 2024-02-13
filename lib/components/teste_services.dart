@@ -11,7 +11,7 @@ class TesteServices extends StatelessWidget {
     final auth = AuthStateService();
 
     final UserModel user =
-        // UserModel(id: '01', name: 'teste01', email: 'email01@teste.com');
+        // UserModel(id: '06', name: 'teste06', email: 'email06@teste.com');
         UserModel(id: 'j1', name: 'jonas', email: 'jonascastro.dev@gmail.com');
     const String pass = '123456789';
 
@@ -31,7 +31,7 @@ class TesteServices extends StatelessWidget {
         // ...
         await auth.signUp(user.email, pass, user.name);
         print('authenticated currentUser');
-        print(auth.loggedUserData);
+        print(await auth.loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);
@@ -43,7 +43,7 @@ class TesteServices extends StatelessWidget {
         // ...
         await auth.logout();
         print('authenticated currentUser');
-        print(auth.loggedUserData);
+        print(await auth.loggedUserData);
       } catch (error) {
         print('error: $error');
         ErrorSnackbar.show(context, error);

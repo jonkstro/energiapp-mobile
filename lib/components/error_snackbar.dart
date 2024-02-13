@@ -34,6 +34,8 @@ class ErrorSnackbar {
         return 'Credenciais incorretas.';
       case 'email-already-in-use':
         return 'O endereço de email já está sendo usado.';
+      case 'too-many-requests':
+        return 'Tente novamente mais tarde.';
       default:
         return 'Erro de autenticação: ${error.message}';
     }
