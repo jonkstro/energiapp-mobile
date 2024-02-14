@@ -12,6 +12,7 @@ class AuthFormData {
   bool continueLogged = false;
   bool hidePassword = true;
   bool hideConfirmPassword = true;
+  bool isLoading = false;
   // add outros campos do formulário, se necessário
 
   // iniciar sempre na tela de login

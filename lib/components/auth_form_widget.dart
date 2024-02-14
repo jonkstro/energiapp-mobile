@@ -219,20 +219,24 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
               Visibility(
                   visible: _formData.isLogin,
                   child: const SizedBox(height: 20)),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  child: Text(
-                    _formData.isLogin ? 'LOGAR' : 'REGISTRAR',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  onPressed: () {
-                    _submitForm();
-                  },
-                ),
-              ),
+              _formData.isLoading
+                  ? CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    )
+                  : Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      width: double.infinity,
+                      height: 60,
+                      child: ElevatedButton(
+                        child: Text(
+                          _formData.isLogin ? 'LOGAR' : 'REGISTRAR',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        onPressed: () {
+                          _submitForm();
+                        },
+                      ),
+                    ),
             ],
           ),
         ),

@@ -8,7 +8,8 @@ import 'package:flutter/foundation.dart';
 
 class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
   final _auth = FirebaseAuth.instance;
-  UserModel? _currentUser;
+  // static, pois pertence à classe, e não à instancia
+  static UserModel? _currentUser;
 
   @override
   UserModel? get currentUser => _currentUser;

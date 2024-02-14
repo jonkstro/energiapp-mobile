@@ -16,14 +16,11 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  bool _isLoading = false;
-
   // Vai executar essa função passando o formulário lá no authForm
   Future<void> _handleSubmit(AuthFormData formData) async {
     if (mounted) {
-      setState(() => _isLoading = true);
+      setState(() => formData.isLoading = true);
     }
-
     try {
       if (formData.isLogin) {
         // login
@@ -71,7 +68,7 @@ class _AuthPageState extends State<AuthPage> {
       print('error: $error');
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() => formData.isLoading = false);
       }
     }
   }
@@ -100,6 +97,18 @@ class _AuthPageState extends State<AuthPage> {
                   child: AuthFormWidget(onSubmit: _handleSubmit),
                 ),
               ),
+              // // Quando tiver carregando a página vai ficar "pensando"
+              // if (_isLoading)
+              //   Container(
+              //     height: size.height,
+              //     decoration:
+              //         const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.5)),
+              //     child: Center(
+              //       child: CircularProgressIndicator(
+              //         color: Theme.of(context).colorScheme.onPrimary,
+              //       ),
+              //     ),
+              //   )
             ],
           ),
         ),
