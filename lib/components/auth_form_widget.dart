@@ -3,7 +3,7 @@ import 'package:energiapp/utils/constants/auth_form_validator.dart';
 import 'package:flutter/material.dart';
 
 class AuthFormWidget extends StatefulWidget {
-  final void Function(AuthFormData) onSubmit;
+  final void Function(AuthFormData, GlobalKey<FormState>) onSubmit;
   const AuthFormWidget({super.key, required this.onSubmit});
 
   @override
@@ -14,11 +14,11 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
   final _formKey = GlobalKey<FormState>();
   final _formData = AuthFormData();
 
-  void _submitForm() {
+  void _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
     // Chamar a função que vai ser passada por parametro pelo authPage
-    widget.onSubmit(_formData);
+    widget.onSubmit(_formData, _formKey);
   }
 
   @override

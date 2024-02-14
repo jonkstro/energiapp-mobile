@@ -17,7 +17,8 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   // Vai executar essa função passando o formulário lá no authForm
-  Future<void> _handleSubmit(AuthFormData formData) async {
+  Future<void> _handleSubmit(
+      AuthFormData formData, GlobalKey<FormState> formKey) async {
     if (mounted) {
       setState(() => formData.isLoading = true);
     }
@@ -39,12 +40,21 @@ class _AuthPageState extends State<AuthPage> {
         )
             .then(
           (value) {
-            Navigator.of(context).push(
+            Navigator.of(context)
+                .push(
               MaterialPageRoute(
                 fullscreenDialog: true,
                 builder: (context) => const EmailValidationPage(),
               ),
-            );
+            )
+                .then((_) {
+              // Este código será executado quando a página EmailValidationPage for fechada
+              // Pode chamar formKey.currentState.reset() aqui
+              setState(() {
+                formData.continueLogged = false;
+                formKey.currentState?.reset();
+              });
+            });
           },
         );
       }
@@ -55,14 +65,23 @@ class _AuthPageState extends State<AuthPage> {
       if (error.toString().contains('E-mail não verificado')) {
         print('testado');
         if (mounted) {
-          Navigator.of(context).push(
+          Navigator.of(context)
+              .push(
             MaterialPageRoute(
               fullscreenDialog: true,
               builder: (context) => EmailValidationPage(
                 email: formData.email,
               ),
             ),
-          );
+          )
+              .then((_) {
+            // Este código será executado quando a página EmailValidationPage for fechada
+            // Pode chamar formKey.currentState.reset() aqui
+            setState(() {
+              formData.continueLogged = false;
+              formKey.currentState?.reset();
+            });
+          });
         }
       }
       print('error: $error');
