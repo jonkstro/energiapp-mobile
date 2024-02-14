@@ -18,12 +18,15 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
   Future<UserModel?> get loggedUserData async {
     final userStoredData = await StorageData.getMap('userData');
     if (userStoredData.isNotEmpty) {
-      _currentUser = UserModel(
-        id: userStoredData['id'],
+      // gerar user com dados vindos do FB e do DB, só a data vai prevalescer local
+      _currentUser = await _toUserModel(
+        null,
+        uid: userStoredData['id'],
         name: userStoredData['name'],
-        email: userStoredData['email'],
-        expiresAt: DateTime.parse(userStoredData['expiresAt']),
         isActive: userStoredData['isActive'],
+        expiresAt: DateTime.parse(
+          userStoredData['expiresAt'],
+        ),
       );
     }
     return _currentUser;
@@ -117,13 +120,14 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
       'createdAt': user.createdAt!.toIso8601String(),
       'updatedAt': user.updatedAt?.toIso8601String(),
       'permissao': 'COMUM',
+      'isActive': user.isActive,
     });
   }
 
-  Future<UserModel?> _getUserAdditionalDataFromDB(User user) async {
+  Future<UserModel?> _getUserAdditionalDataFromDB(String uid) async {
     final store = FirebaseFirestore.instance;
     final String userPath = FirebaseConstants.userCollectionName;
-    final docRef = store.collection(userPath).doc(user.uid);
+    final docRef = store.collection(userPath).doc(uid);
     final doc = await docRef.get();
     final data = doc.data();
     if (data == null) return null;
@@ -142,7 +146,8 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
 
   // Converte um objeto User do Firebase em um UserModel personalizado
   _toUserModel(
-    User user, {
+    User? user, {
+    String? uid,
     String? name,
     bool? isCreated,
     bool? isUpdated,
@@ -150,19 +155,20 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
     bool? isActive,
     String? permissao,
   }) async {
-    final userFromDb = await _getUserAdditionalDataFromDB(user);
+    final userFromDb =
+        await _getUserAdditionalDataFromDB(user?.uid ?? uid ?? '');
     return UserModel(
-      id: user.uid,
-      name: name ?? user.displayName ?? user.email!.split('@')[0],
-      email: user.email!,
+      id: user?.uid ?? uid ?? '',
+      name: name ?? user?.displayName ?? userFromDb?.name ?? '',
+      email: user?.email ?? userFromDb?.email ?? '',
       createdAt:
           // se iscreated for vazio vai ser false
-          isCreated ?? false ? userFromDb?.createdAt ?? DateTime.now() : null,
+          isCreated ?? false ? DateTime.now() : userFromDb?.createdAt,
       updatedAt:
           // do mesmo jeito no isUpdated
-          isUpdated ?? false ? userFromDb?.updatedAt ?? DateTime.now() : null,
+          isUpdated ?? false ? DateTime.now() : userFromDb?.updatedAt,
       expiresAt: expiresAt ?? DateTime.now().add(const Duration(hours: 1)),
-      isActive: isActive ?? false,
+      isActive: userFromDb?.isActive ?? isActive ?? false,
       permissao: permissao ?? userFromDb?.permissao ?? 'COMUM',
     );
   }

@@ -1,7 +1,6 @@
 import 'package:energiapp/core/models/user_model.dart';
 import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:energiapp/pages/auth_page.dart';
-import 'package:energiapp/pages/email_validation_page.dart';
 import 'package:energiapp/pages/home_page.dart';
 import 'package:energiapp/pages/splash_screen.dart';
 import 'package:energiapp/utils/constants/firebase_constants.dart';
@@ -37,17 +36,21 @@ class _WidgetTreeStatePage extends State<WidgetTreePage> {
           return FutureBuilder(
             future: AuthStateService().loggedUserData,
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                // Se não vier nada, tem que fazer login
-                return const AuthPage();
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (!snapshot.hasData) {
+                  // Se não vier nada, tem que fazer login
+                  return const AuthPage();
+                }
+                final UserModel user = snapshot.data!;
+                // Se o user não tiver ativo, vai para página de email validation
+                if (user.expiresAt!.isBefore(DateTime.now())) {
+                  return const AuthPage();
+                }
+                return const HomePage();
+              } else {
+                // Aguardando dados
+                return const SplashScreen();
               }
-              final UserModel user = snapshot.data!;
-              // Se o user não tiver ativo, vai para página de email validation
-              // if (!user.isActive!) return EmailValidationPage();
-              if (user.expiresAt!.isBefore(DateTime.now())) {
-                return const AuthPage();
-              }
-              return const HomePage();
             },
           );
         }

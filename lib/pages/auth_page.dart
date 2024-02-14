@@ -2,11 +2,10 @@ import 'package:energiapp/components/auth_form_widget.dart';
 import 'package:energiapp/components/error_snackbar.dart';
 import 'package:energiapp/components/logo_container_widget.dart';
 import 'package:energiapp/core/models/auth_form_data.dart';
-import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
 import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:energiapp/pages/email_validation_page.dart';
+import 'package:energiapp/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -25,10 +24,21 @@ class _AuthPageState extends State<AuthPage> {
     try {
       if (formData.isLogin) {
         // login
-        await AuthStateService().login(
+        await AuthStateService()
+            .login(
           formData.email,
           formData.password,
           formData.continueLogged,
+        )
+            .then(
+          (value) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+          },
         );
       } else {
         // signup
@@ -63,7 +73,6 @@ class _AuthPageState extends State<AuthPage> {
         ErrorSnackbar.show(context, error);
       }
       if (error.toString().contains('E-mail não verificado')) {
-        print('testado');
         if (mounted) {
           Navigator.of(context)
               .push(
@@ -84,7 +93,6 @@ class _AuthPageState extends State<AuthPage> {
           });
         }
       }
-      print('error: $error');
     } finally {
       if (mounted) {
         setState(() => formData.isLoading = false);
@@ -94,7 +102,6 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthStateFirebaseService>(context);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -116,18 +123,6 @@ class _AuthPageState extends State<AuthPage> {
                   child: AuthFormWidget(onSubmit: _handleSubmit),
                 ),
               ),
-              // // Quando tiver carregando a página vai ficar "pensando"
-              // if (_isLoading)
-              //   Container(
-              //     height: size.height,
-              //     decoration:
-              //         const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.5)),
-              //     child: Center(
-              //       child: CircularProgressIndicator(
-              //         color: Theme.of(context).colorScheme.onPrimary,
-              //       ),
-              //     ),
-              //   )
             ],
           ),
         ),
