@@ -5,6 +5,7 @@ import 'package:energiapp/core/models/auth_form_data.dart';
 import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:energiapp/pages/email_validation_page.dart';
 import 'package:energiapp/pages/home_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -112,9 +113,11 @@ class _AuthPageState extends State<AuthPage> {
               Center(
                 child: Container(
                   margin: EdgeInsets.only(
-                    top: size.height >= 400
-                        ? size.height * 0.4
-                        : size.height * 0.5,
+                    top: kIsWeb
+                        ? size.height * 0.25
+                        : size.height >= 400
+                            ? size.height * 0.4
+                            : size.height * 0.5,
                   ),
                   alignment: Alignment.center,
                   constraints: const BoxConstraints(

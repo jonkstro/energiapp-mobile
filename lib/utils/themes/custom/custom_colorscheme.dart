@@ -10,7 +10,7 @@ class CustomColorScheme {
     onPrimary: ColorsConstants.primaryColor,
   );
   static const darkTheme = ColorScheme.dark(
-    primary: ColorsConstants.primaryColor,
+    primary: ColorsConstants.backgroundSecondaryLight,
     secondary: ColorsConstants.secondaryColor,
     background: ColorsConstants.backgroundPrimaryDark,
     onBackground: ColorsConstants.backgroundSecondaryDark,

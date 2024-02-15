@@ -24,6 +24,7 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       margin: const EdgeInsets.all(12),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
