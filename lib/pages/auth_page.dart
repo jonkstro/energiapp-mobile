@@ -1,4 +1,5 @@
 import 'package:energiapp/components/auth_form_widget.dart';
+import 'package:energiapp/components/background_widget.dart';
 import 'package:energiapp/components/error_snackbar.dart';
 import 'package:energiapp/components/logo_container_widget.dart';
 import 'package:energiapp/core/models/auth_form_data.dart';
@@ -103,31 +104,10 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Stack(
-            children: [
-              const LogoContainerWidget(),
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: kIsWeb
-                        ? size.height * 0.25
-                        : size.height >= 400
-                            ? size.height * 0.4
-                            : size.height * 0.5,
-                  ),
-                  alignment: Alignment.center,
-                  constraints: const BoxConstraints(
-                    maxWidth: 600,
-                  ),
-                  child: AuthFormWidget(onSubmit: _handleSubmit),
-                ),
-              ),
-            ],
-          ),
+        body: BackgroundWidget(
+          child: AuthFormWidget(onSubmit: _handleSubmit),
         ),
       ),
     );
