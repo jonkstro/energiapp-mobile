@@ -99,9 +99,27 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
     final user = auth.currentUser;
 
     if (user == null) return;
-
+    await auth.setLanguageCode('pt');
     await user.sendEmailVerification();
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    await FirebaseAuth.instance.setLanguageCode('pt');
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
+
+  /// SÓ FUNCIONA COM JS:
+  // Future<String> verifyPasswordResetCode(String code) async {
+  //   final result = await FirebaseAuth.instance.verifyPasswordResetCode(code);
+  //   return result;
+  // }
+
+  // Future<void> confirmPasswordReset(String code, String newPassword) async {
+  //   await FirebaseAuth.instance.confirmPasswordReset(
+  //     code: code,
+  //     newPassword: newPassword,
+  //   );
+  // }
 
   /// ----------- FIRESTORE INICIO ------------
   // Salvar as informações de user pertinentes ao app no Firestore ou RealtimeDB
@@ -144,6 +162,26 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
   }
   // ----------- FIRESTORE FIM ------------
 
+  /// ------------ SHARED PREFERENCES - INICIO ------------
+  Future<void> _storeLocallyUserData(UserModel user) async {
+    await StorageData.saveMap('userData', {
+      'id': user.id,
+      'name': user.name,
+      'email': user.email,
+      'createdAt': user.createdAt?.toIso8601String(),
+      'updatedAt': user.updatedAt?.toIso8601String(),
+      'expiresAt': user.expiresAt?.toIso8601String(),
+      'isActive': user.isActive,
+      'permissao': 'COMUM',
+    });
+  }
+
+  Future<void> _cleanStoredUserData() async {
+    final userData = await StorageData.getMap('userData');
+    if (userData.isNotEmpty) await StorageData.remove('userData');
+  }
+  // ------------ SHARED PREFERENCES - FIM ------------
+
   // Converte um objeto User do Firebase em um UserModel personalizado
   _toUserModel(
     User? user, {
@@ -172,24 +210,4 @@ class AuthStateFirebaseService with ChangeNotifier implements AuthStateService {
       permissao: permissao ?? userFromDb?.permissao ?? 'COMUM',
     );
   }
-
-  /// ------------ SHARED PREFERENCES - INICIO ------------
-  Future<void> _storeLocallyUserData(UserModel user) async {
-    await StorageData.saveMap('userData', {
-      'id': user.id,
-      'name': user.name,
-      'email': user.email,
-      'createdAt': user.createdAt?.toIso8601String(),
-      'updatedAt': user.updatedAt?.toIso8601String(),
-      'expiresAt': user.expiresAt?.toIso8601String(),
-      'isActive': user.isActive,
-      'permissao': 'COMUM',
-    });
-  }
-
-  Future<void> _cleanStoredUserData() async {
-    final userData = await StorageData.getMap('userData');
-    if (userData.isNotEmpty) await StorageData.remove('userData');
-  }
-  // ------------ SHARED PREFERENCES - FIM ------------
 }

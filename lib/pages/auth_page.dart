@@ -1,12 +1,10 @@
 import 'package:energiapp/components/auth_form_widget.dart';
 import 'package:energiapp/components/background_widget.dart';
 import 'package:energiapp/components/error_snackbar.dart';
-import 'package:energiapp/components/logo_container_widget.dart';
 import 'package:energiapp/core/models/auth_form_data.dart';
 import 'package:energiapp/core/services/auth/auth_state_service.dart';
 import 'package:energiapp/pages/email_validation_page.dart';
 import 'package:energiapp/pages/home_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {

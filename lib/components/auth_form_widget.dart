@@ -1,4 +1,5 @@
 import 'package:energiapp/core/models/auth_form_data.dart';
+import 'package:energiapp/pages/forgot_pass_page.dart';
 import 'package:energiapp/utils/constants/auth_form_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -211,9 +212,9 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   onPressed: () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //   builder: (context) => ForgotPassPage(),
-                    // ));
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ForgotPassPage(),
+                    ));
                   },
                 ),
               ),

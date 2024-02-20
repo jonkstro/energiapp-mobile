@@ -9,7 +9,7 @@ class LogoContainerWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
-      height: kIsWeb ? size.height * 0.3 : size.height * 0.5,
+      height: kIsWeb ? size.height * 0.3 : size.height * 0.4,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onBackground,
       ),
@@ -44,11 +44,14 @@ class LogoContainerWidget extends StatelessWidget {
             )
           : size.height >= 400
               ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: 100,
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 100,
+                      ),
                     ),
                     Text(
                       'EnergiApp',

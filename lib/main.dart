@@ -1,3 +1,4 @@
+import 'package:energiapp/core/providers/device_list_provider.dart';
 import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
 import 'package:energiapp/pages/widget_tree_page.dart';
 import 'package:energiapp/utils/themes/my_theme.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthStateFirebaseService(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => DeviceListProvider(),
+        ),
         // add outros providers, se necessário...
       ],
       child: MaterialApp(
@@ -28,6 +32,7 @@ class MyApp extends StatelessWidget {
         theme: MyTheme.lightTheme,
         darkTheme: MyTheme.darkTheme,
         home: const WidgetTreePage(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

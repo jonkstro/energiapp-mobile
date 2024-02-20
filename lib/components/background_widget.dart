@@ -19,7 +19,7 @@ class BackgroundWidget extends StatelessWidget {
                 top: kIsWeb
                     ? size.height * 0.25
                     : size.height >= 400
-                        ? size.height * 0.4
+                        ? size.height * 0.3
                         : size.height * 0.5,
               ),
               alignment: Alignment.center,

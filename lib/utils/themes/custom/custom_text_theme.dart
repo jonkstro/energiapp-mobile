@@ -9,7 +9,7 @@ class CustomTextTheme {
       FontWeight.normal,
     ),
     labelMedium: _customStyle(
-      16,
+      18,
       ColorsConstants.bodyTextLight,
       FontWeight.bold,
     ),
@@ -41,7 +41,7 @@ class CustomTextTheme {
       FontWeight.normal,
     ),
     labelMedium: _customStyle(
-      16,
+      18,
       ColorsConstants.bodyTextDark,
       FontWeight.bold,
     ),
@@ -69,6 +69,10 @@ class CustomTextTheme {
 
   static TextStyle _customStyle(
       double fontSize, Color color, FontWeight fontWeight) {
-    return TextStyle(fontSize: fontSize, color: color, fontWeight: fontWeight);
+    return TextStyle(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: fontWeight,
+    );
   }
 }

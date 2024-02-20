@@ -1,4 +1,5 @@
 import 'package:energiapp/utils/themes/custom/custom_colorscheme.dart';
+import 'package:energiapp/utils/themes/custom/custom_list_tile_theme.dart';
 import 'package:energiapp/utils/themes/custom/custom_text_form_field_theme.dart';
 import 'package:energiapp/utils/themes/custom/custom_text_theme.dart';
 import 'package:energiapp/utils/themes/custom/custon_button_theme.dart';
@@ -12,6 +13,7 @@ class MyTheme {
     colorScheme: CustomColorScheme.lightTheme,
     inputDecorationTheme: CustomTextFormField.lightTheme,
     elevatedButtonTheme: CustomButtonTheme.lightTheme,
+    listTileTheme: CustomListTileTheme.lightTheme,
   );
   static final darkTheme = ThemeData(
     useMaterial3: true,
@@ -20,5 +22,6 @@ class MyTheme {
     colorScheme: CustomColorScheme.darkTheme,
     inputDecorationTheme: CustomTextFormField.darkTheme,
     elevatedButtonTheme: CustomButtonTheme.darkTheme,
+    listTileTheme: CustomListTileTheme.darkTheme,
   );
 }
