@@ -1,6 +1,6 @@
 import 'package:energiapp/components/error_snackbar.dart';
 import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
-import 'package:energiapp/utils/constants/auth_form_validator.dart';
+import 'package:energiapp/utils/validators/auth_form_validator.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassFormWidget extends StatefulWidget {

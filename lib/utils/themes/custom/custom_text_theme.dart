@@ -28,6 +28,11 @@ class CustomTextTheme {
       ColorsConstants.bodyTextDark,
       FontWeight.bold,
     ),
+    headlineMedium: _customStyle(
+      28,
+      ColorsConstants.bodyTextLight,
+      FontWeight.bold,
+    ),
     headlineLarge: _customStyle(
       30,
       ColorsConstants.bodyTextLight,

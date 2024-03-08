@@ -7,9 +7,8 @@ class AuthFormValidator {
   }
 
   String? emailValidator(String email) {
-    // TODO:
-    // 1 - Validar por emails válidos 'gmail', 'hotmail', etc...
-    // 2 - Verificar caracteres especiais proibidos
+    // TODO: 1 - Validar por emails válidos 'gmail', 'hotmail', etc...
+    // TODO: 2 - Verificar caracteres especiais proibidos
     if (email.trim().isEmpty ||
         !email.contains('@') ||
         !email.contains('.com')) {

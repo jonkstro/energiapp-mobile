@@ -1,4 +1,5 @@
 import 'package:energiapp/components/app_drawer_widget.dart';
+import 'package:energiapp/components/device_form_widget.dart';
 import 'package:energiapp/components/device_list_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void _openNewDeviceModal() {
+    final mediaQuery = MediaQuery.of(context);
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            double height = mediaQuery.size.height;
+            return SizedBox(
+              height: height * 0.80,
+              child: const DeviceFormWidget(),
+            );
+          },
+        );
+      },
+      isScrollControlled: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,8 +50,7 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Colors.black,
           shape: const CircleBorder(),
           child: const Icon(Icons.add),
-          // TODO: Criar método que vai chamar Modal pra criar dispositivo
-          onPressed: () {},
+          onPressed: () => _openNewDeviceModal(),
         ),
       ),
     );

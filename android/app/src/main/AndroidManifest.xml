@@ -1,8 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- Configuração pra localização no ANDROID - Inicio  -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+<!-- Configuração pra localização no ANDROID - Final  -->
     <application
         android:label="energiapp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Configuração pra Google Maps no ANDROID - Inicio  -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAGfdYdFDMFLew53_jy4FDjs_sw8NT9chU"/>
+        <!-- Configuração pra Google Maps no ANDROID - Final  -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
