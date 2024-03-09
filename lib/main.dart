@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  // TODO: Só quando for buildar: Usar dart-define no build ao invés de .env
   await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
@@ -22,8 +23,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthStateFirebaseService(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => DeviceListProvider(),
+        ChangeNotifierProxyProvider<AuthStateFirebaseService,
+            DeviceListProvider>(
+          // Iniciar com userId vazio e lista vazia já no construtor
+          create: (_) => DeviceListProvider(),
+          update: (ctx, auth, previous) {
+            return DeviceListProvider(
+              auth.currentUser!.id, // id do user atual logado
+              previous?.items ?? [], // passando lista dos devices anteriores
+            );
+          },
         ),
         // add outros providers, se necessário...
       ],

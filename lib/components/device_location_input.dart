@@ -18,9 +18,11 @@ class DeviceLocationInput extends StatefulWidget {
 
 class _DeviceLocationInputState extends State<DeviceLocationInput> {
   String? _enderecoAtual;
+  bool _isLoading = false;
 
   //! Método que irá buscar a localização atual do usuário
   Future<void> _getCurrentUserLocation() async {
+    if (mounted) setState(() => _isLoading = true);
     final locData = await Location().getLocation();
     // transformar em LatLng (que está sendo usado na model)
     final locDataLatLng = LatLng(
@@ -29,14 +31,20 @@ class _DeviceLocationInputState extends State<DeviceLocationInput> {
     );
     // aguardar realizar a requisição http do google maps
     final userLocation = await LocationUtil.getAdressFrom(locDataLatLng);
-    if (mounted) setState(() => _enderecoAtual = userLocation);
-
+    if (mounted) {
+      setState(() {
+        _enderecoAtual = userLocation;
+        _isLoading = false;
+      });
+    }
     // chamar o método lá do device form para atribuir o valor LatLng no objeto
     widget.onSelectPosition(locDataLatLng);
   }
 
   //! Método que irá abrir a tela do google maps pro usuário escolher no mapa
   Future<void> _selectOnMap() async {
+    if (mounted) setState(() => _isLoading = true);
+
     // pegar a localização atual pra ser a inicial do google maps
     final locData = await Location().getLocation();
     final LatLng? selectedPosition = await Navigator.of(context).push(
@@ -54,9 +62,17 @@ class _DeviceLocationInputState extends State<DeviceLocationInput> {
       ),
     );
     // se o user fechar o mapa sem escolher a posição, vai fazer nada
-    if (selectedPosition == null) return;
+    if (selectedPosition == null) {
+      if (mounted) setState(() => _isLoading = false);
+      return;
+    }
     final selectedAdress = await LocationUtil.getAdressFrom(selectedPosition);
-    if (mounted) setState(() => _enderecoAtual = selectedAdress);
+    if (mounted) {
+      setState(() {
+        _enderecoAtual = selectedAdress;
+        _isLoading = false;
+      });
+    }
     // chamar o método lá do device form para atribuir o valor LatLng no objeto
     widget.onSelectPosition(selectedPosition);
   }
@@ -86,8 +102,17 @@ class _DeviceLocationInputState extends State<DeviceLocationInput> {
             constraints: const BoxConstraints(maxWidth: 600),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.location_on),
-              label: const Text('Pegar minha localização atual'),
-              onPressed: () => _getCurrentUserLocation(),
+              label: _isLoading
+                  ? const SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text('Pegar minha localização atual'),
+              onPressed: _isLoading ? null : () => _getCurrentUserLocation(),
             ),
           ),
           Container(
@@ -96,8 +121,17 @@ class _DeviceLocationInputState extends State<DeviceLocationInput> {
             constraints: const BoxConstraints(maxWidth: 600),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.map),
-              label: const Text('Escolher localização no mapa'),
-              onPressed: () => _selectOnMap(),
+              label: _isLoading
+                  ? const SizedBox(
+                      height: 15,
+                      width: 15,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text('Escolher localização no mapa'),
+              onPressed: _isLoading ? null : () => _selectOnMap(),
             ),
           ),
         ],

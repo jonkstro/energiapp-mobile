@@ -2,11 +2,15 @@ import 'dart:math';
 
 import 'package:energiapp/components/device_location_input.dart';
 import 'package:energiapp/core/models/device_form_data.dart';
+import 'package:energiapp/core/providers/device_list_provider.dart';
+import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
 import 'package:energiapp/utils/validators/device_form_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class DeviceFormWidget extends StatefulWidget {
+  // TODO: Aproveitar o mesmo form pra atualizar, pra isso basta adicionar um DeviceModel que irá receber opcionalmente, caso não seja nulo, o formulário irá aparecer os valores recebidos, e o botão ao invés de adicionar, terá atualizar. Pode se basear no Shopping App da Udemy.
   const DeviceFormWidget({super.key});
 
   @override
@@ -16,6 +20,7 @@ class DeviceFormWidget extends StatefulWidget {
 class _DeviceFormWidgetState extends State<DeviceFormWidget> {
   final _formKey = GlobalKey<FormState>();
   final _formData = DeviceFormData();
+  bool _isLoading = true;
   final _macController = TextEditingController();
   // variavel que vai retornar um LatLng do google maps API
   LatLng? _pickedPosition;
@@ -31,6 +36,29 @@ class _DeviceFormWidgetState extends State<DeviceFormWidget> {
   void dispose() {
     super.dispose();
     _macController.dispose();
+  }
+
+  Future<void> _submitForm() async {
+    // 1 - Validar o Formulário, se não tiver válido vai fazer mais nada
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
+    // 2 - Pegar o user que tá logado agora
+    if (mounted) setState(() => _isLoading = true);
+    final user = await Provider.of<AuthStateFirebaseService>(
+      context,
+      listen: false,
+    ).loggedUserData;
+    // 3 - Criar dispositivo com base nos dados enviados pelo Formulário
+    await Provider.of<DeviceListProvider>(
+      context,
+      listen: false,
+    ).createDevice(
+      _formData.name,
+      _formData.macAdress,
+      _pickedPosition!,
+      user!,
+    );
+    if (mounted) setState(() => _isLoading = false);
   }
 
   @override
@@ -112,25 +140,26 @@ class _DeviceFormWidgetState extends State<DeviceFormWidget> {
             // o valor retornado da API do google maps
             DeviceLocationInput(onSelectPosition: _selectPosition),
             const SizedBox(height: 30),
-            Container(
-              margin: const EdgeInsets.all(12),
-              width: double.infinity,
-              height: 60,
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.add_circle),
-                label: const Text(
-                  'Adicionar Dispositivo',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  print(
-                      'Position: ${_pickedPosition?.latitude}, ${_pickedPosition?.longitude}');
-
-                  // TODO: Chamar o método addDevice no Provider para que possa adicionar novo dispositivo
-                },
-              ),
-            ),
+            _isLoading
+                ? const SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: CircularProgressIndicator(),
+                  )
+                : Container(
+                    margin: const EdgeInsets.all(12),
+                    width: double.infinity,
+                    height: 60,
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.add_circle),
+                      label: const Text(
+                        'Adicionar Dispositivo',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () => _submitForm(),
+                    ),
+                  ),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
+import 'package:energiapp/core/models/device_model.dart';
 import 'package:flutter/material.dart';
 
 class DeviceCardWidget extends StatelessWidget {
-  const DeviceCardWidget({super.key});
+  final DeviceModel device;
+  const DeviceCardWidget({super.key, required this.device});
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,12 @@ class DeviceCardWidget extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        title: const Text(
-          '34-EA-56-5A-66-BE',
+        title: Text(
+          device.macAdress,
           textAlign: TextAlign.right,
         ),
-        subtitle: const Text(
-          'Av. Dep. Pinheiro Machado, 1 - Rodoviária, Parnaíba - PI',
+        subtitle: Text(
+          device.location?.adress ?? 'Sem endereço',
           textAlign: TextAlign.right,
           maxLines: 2, // Defina o número máximo de linhas desejado
           overflow: TextOverflow.ellipsis, // Adiciona "..." em caso de overflow
