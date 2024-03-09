@@ -27,17 +27,19 @@ class DeviceListWidget extends StatelessWidget {
             ),
             width: 600,
             height: 450,
-            child: RefreshIndicator(
-              onRefresh: () => _refreshDevices(),
-              child: ListView.builder(
-                itemCount: deviceList.itemsCount,
-                itemBuilder: (context, index) {
-                  return DeviceCardWidget(
-                    device: deviceList.items[index],
-                  );
-                },
-              ),
-            )),
+            child: deviceList.itemsCount == 0
+                ? const Center(child: Text('Nenhum dispositivo cadastrado!'))
+                : RefreshIndicator(
+                    onRefresh: () => _refreshDevices(),
+                    child: ListView.builder(
+                      itemCount: deviceList.itemsCount,
+                      itemBuilder: (context, index) {
+                        return DeviceCardWidget(
+                          device: deviceList.items[index],
+                        );
+                      },
+                    ),
+                  )),
       ),
     );
   }

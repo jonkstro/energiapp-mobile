@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:energiapp/components/device_location_input.dart';
+import 'package:energiapp/components/error_snackbar.dart';
 import 'package:energiapp/core/models/device_form_data.dart';
 import 'package:energiapp/core/providers/device_list_provider.dart';
 import 'package:energiapp/core/services/auth/auth_state_firebase_service.dart';
@@ -39,6 +40,41 @@ class _DeviceFormWidgetState extends State<DeviceFormWidget> {
     // 1 - Validar o Formulário, se não tiver válido vai fazer mais nada
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
+    if (_pickedPosition == null) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.red,
+            title: const Text(
+              'Erro',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const Text(
+              'Falta preencher a localização do dispositivo. \nVocê pode pegar sua localização atual ou buscar uma localização no mapa',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text(
+                  'FECHAR',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+      // ErrorSnackbar.show(context, 'Preencha a localização');
+      return;
+    }
     // 2 - Pegar o user que tá logado agora
     if (mounted) setState(() => _isLoading = true);
     final user = await Provider.of<AuthStateFirebaseService>(
@@ -55,7 +91,13 @@ class _DeviceFormWidgetState extends State<DeviceFormWidget> {
       _pickedPosition!,
       user!,
     );
-    if (mounted) setState(() => _isLoading = false);
+    if (mounted)
+      setState(() {
+        _isLoading = false;
+        _formKey.currentState?.reset();
+        _pickedPosition = null;
+        Navigator.of(context).pop();
+      });
   }
 
   @override

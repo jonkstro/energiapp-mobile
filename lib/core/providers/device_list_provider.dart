@@ -32,29 +32,37 @@ class DeviceListProvider with ChangeNotifier {
         );
     final doc = await docRef.get();
     final data = doc.docs.map((e) {
-      final dado = e.data();
+      return e.data();
+    }).toList();
 
+    // Ordenar a lista de Mapas com base na chave 'createdAt' do mais novo pro mais velho
+    data.sort((a, b) {
+      final DateTime createdAtA = DateTime.parse(a['createdAt']);
+      final DateTime createdAtB = DateTime.parse(b['createdAt']);
+      return createdAtB.compareTo(createdAtA);
+    });
+
+    // Converter e adicionar os itens ordenados em _items
+    for (final itemData in data) {
       _items.add(
         DeviceModel(
-          id: e.id,
-          name: dado['name'],
-          macAdress: dado['macAdress'],
+          id: itemData['id'],
+          name: itemData['name'],
+          macAdress: itemData['macAdress'],
           user: UserModel(
-            id: dado['userId'],
-            name: dado['userName'],
-            email: dado['userEmail'],
+            id: itemData['userId'],
+            name: itemData['userName'],
+            email: itemData['userEmail'],
           ),
-          createdAt: DateTime.parse(dado['createdAt']),
+          createdAt: DateTime.parse(itemData['createdAt']),
           location: DeviceLocation(
-            adress: dado['adress'],
-            latitude: dado['latitude'],
-            longitude: dado['longitude'],
+            adress: itemData['adress'],
+            latitude: itemData['latitude'],
+            longitude: itemData['longitude'],
           ),
         ),
       );
-    }).toList();
-    print('data:');
-    print(data);
+    }
     notifyListeners();
   }
 
@@ -135,6 +143,11 @@ class DeviceListProvider with ChangeNotifier {
         id: data['userId'],
         name: data['userName'],
         email: data['userEmail'],
+      ),
+      location: DeviceLocation(
+        adress: data['adress'],
+        latitude: data['latitude'],
+        longitude: data['longitude'],
       ),
       createdAt: DateTime.parse(data['createdAt']),
     );
