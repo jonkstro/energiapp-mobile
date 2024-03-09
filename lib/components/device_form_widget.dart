@@ -20,16 +20,13 @@ class DeviceFormWidget extends StatefulWidget {
 class _DeviceFormWidgetState extends State<DeviceFormWidget> {
   final _formKey = GlobalKey<FormState>();
   final _formData = DeviceFormData();
-  bool _isLoading = true;
+  bool _isLoading = false;
   final _macController = TextEditingController();
   // variavel que vai retornar um LatLng do google maps API
   LatLng? _pickedPosition;
 
   void _selectPosition(LatLng position) {
     if (mounted) setState(() => _pickedPosition = position);
-
-    print('POSITION latitude: ${_pickedPosition?.latitude}');
-    print('POSITION longitude: ${_pickedPosition?.longitude}');
   }
 
   @override

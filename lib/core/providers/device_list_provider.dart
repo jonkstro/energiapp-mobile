@@ -32,9 +32,26 @@ class DeviceListProvider with ChangeNotifier {
         );
     final doc = await docRef.get();
     final data = doc.docs.map((e) {
-      print('e.data()');
-      print(e.data());
-      // TODO: Ver o que tá retornando do map, pra poder adicionar novo Device no _items.add(Device(id:...))
+      final dado = e.data();
+
+      _items.add(
+        DeviceModel(
+          id: e.id,
+          name: dado['name'],
+          macAdress: dado['macAdress'],
+          user: UserModel(
+            id: dado['userId'],
+            name: dado['userName'],
+            email: dado['userEmail'],
+          ),
+          createdAt: DateTime.parse(dado['createdAt']),
+          location: DeviceLocation(
+            adress: dado['adress'],
+            latitude: dado['latitude'],
+            longitude: dado['longitude'],
+          ),
+        ),
+      );
     }).toList();
     print('data:');
     print(data);
@@ -64,7 +81,7 @@ class DeviceListProvider with ChangeNotifier {
   ) async {
     // 1 - Definindo o dispositivo conforme os dados que recebemos do Form
     final device = DeviceModel(
-      id: Random().nextDouble().toString(),
+      id: macAdress,
       name: name,
       macAdress: macAdress,
       location: DeviceLocation(

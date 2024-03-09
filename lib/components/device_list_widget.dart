@@ -10,6 +10,12 @@ class DeviceListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceList = Provider.of<DeviceListProvider>(context);
+
+    Future<void> _refreshDevices() {
+      return Provider.of<DeviceListProvider>(context, listen: false)
+          .loadDevices();
+    }
+
     return BackgroundWidget(
       child: Card(
         margin: const EdgeInsets.all(10),
@@ -21,13 +27,16 @@ class DeviceListWidget extends StatelessWidget {
             ),
             width: 600,
             height: 450,
-            child: ListView.builder(
-              itemCount: deviceList.itemsCount,
-              itemBuilder: (context, index) {
-                return DeviceCardWidget(
-                  device: deviceList.items[index],
-                );
-              },
+            child: RefreshIndicator(
+              onRefresh: () => _refreshDevices(),
+              child: ListView.builder(
+                itemCount: deviceList.itemsCount,
+                itemBuilder: (context, index) {
+                  return DeviceCardWidget(
+                    device: deviceList.items[index],
+                  );
+                },
+              ),
             )),
       ),
     );
